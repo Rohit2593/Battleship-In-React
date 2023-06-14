@@ -15,48 +15,67 @@ function Square({squares, rowIndex, columnIndex, handleClick}) {
 function BattleShipGame() {
   const [squares, setSquares] = useState(Array(9).fill(Array(9).fill(null)));
   const [moves, setMoves] = useState(0);
-  const [numberOfShipSquares, setNumberofShipSquares] = useState(0);
   const [hitNumberOfshipSquares, setHitNumberOfShipSquares] = useState(-1); 
-  const [shipSquares, setShipSquares] = useState([[]]);
+  const [shipSquares, setShipSquares] = useState([]);
+  const [gameStarted, setGameStarted] = useState(false);
 
-  // function addShip() { // adds a ship of size 5 to our board
-  //   let validShip = false;
-  //   let dr = 0;
-  //   let dc = 0;
-  //   while(!validShip) {
-  //     let row = Math.floor(Math.random() * 9);
-  //     let column = Math.floor(Math.random() * 9);
-  //     let orientation = Math.floor(Math.random() * 2);
-  //     if(orientation === 0){ // vertical
-  //       dr = 1;
-  //     }
-  //     else // horizontal
-  //       dc = 1;
+  function isShipSquare(rowIndex, columnIndex){
+    for(let i = 0; i<shipSquares.length; i++){
+      if(shipSquares[i][0] === rowIndex && shipSquares[i][1] === columnIndex)
+        return true;
+    }
 
-  //     validShip = true;
-  //     for(let i = 0; i<5; i++){
-  //       if(row >= 9 || column >= 9 || shipSquares.includes([row, column])) {
-  //         validShip = false;
-  //         break;
-  //       }
+    return false;
+  }
 
-  //       row += dr;
-  //       column += dc;
-  //     }
+  function getRandomInt(lessThan){
+    return Math.floor(Math.random() * lessThan);
+  }
 
-  //     if(validShip) {
-  //       console.log(row + ' ' + column);
-  //       for(let i = 0; i<5; i++) {
-  //         let newShipSquares = shipSquares.map((item) => item.slice());
-  //         newShipSquares.push([row, column]);
-  //         setShipSquares(newShipSquares);
-  //         row += dr;
-  //         column += dc;
-  //       }
-  //       setNumberofShipSquares(numberOfShipSquares + 5);
-  //     }
-  //   }
-  // }
+  function addShip(newShipSquares) { // adds a ship of size 5 to our board
+    while(true){
+      let row = getRandomInt(9);
+      let column = getRandomInt(9);
+      let orientation = getRandomInt(2);
+
+      let dr = 0;
+      let dc = 0;
+
+      if(orientation === 0)
+        dr = 1;
+      else  
+        dc = 1;
+
+      let validShip = true;
+
+      for(let i = 0; i<5; i++){
+        let newRow = row + i * dr;
+        let newColumn = column + i * dc;
+
+        let alreadyShipSquare = false;
+        for(let i = 0; i<newShipSquares.length; i++){
+          if(newShipSquares[i][0] === newRow && newShipSquares[i][1] === newColumn){
+            alreadyShipSquare = true;
+            break;
+          }
+        }
+        if(newRow === 9 || newColumn === 9 || alreadyShipSquare) {
+          validShip = false;
+          break;
+        }
+      }
+
+      if(validShip){
+        for(let i =0; i<5; i++){  
+          let newRow = row + i * dr;
+          let newColumn = column + i * dc;
+
+          newShipSquares.push([newRow, newColumn]);
+        }
+        break;
+      }
+    }
+  }
 
   function resetBoard() {
     const newSquares = squares.map((item) => item.slice());
@@ -66,26 +85,16 @@ function BattleShipGame() {
 
     setSquares(newSquares);
     setMoves(0);
-    setNumberofShipSquares(10);
     setHitNumberOfShipSquares(0);
-    let newShipSquares = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 8], [1, 8], [2, 8], [3, 8], [4, 8]];
+    let newShipSquares = [];
+    addShip(newShipSquares);
+    addShip(newShipSquares);
     setShipSquares(newShipSquares);
-    // addShip();
-    // addShip();
-  }
-
-
-  function isShipSquare(rowIndex, columnIndex) {
-    for(let i = 0; i<shipSquares.length; i++){
-      if(shipSquares[i][0] === rowIndex && shipSquares[i][1] === columnIndex)
-        return true;
-    }
-
-    return false;
+    setGameStarted(true);
   }
 
   function handleClick(rowIndex, columnIndex) {
-    if(hitNumberOfshipSquares === numberOfShipSquares || squares[rowIndex][columnIndex])
+    if(!gameStarted || hitNumberOfshipSquares === shipSquares.length || squares[rowIndex][columnIndex])
       return;
     const newSquares = squares.map((item) => item.slice());
     if(!isShipSquare(rowIndex, columnIndex)) // if the square at (rowIndex, columnIndex) is not a ship square
@@ -100,11 +109,11 @@ function BattleShipGame() {
 
   return (
     <div className="App">
-      {(hitNumberOfshipSquares === numberOfShipSquares) && 
+      {(hitNumberOfshipSquares === shipSquares.length) && 
         <h1>You Win</h1>
       }
       <h2>Number of Moves: {moves}</h2>
-      <button onClick = {resetBoard} className="startButton">Start</button>
+      <button onClick = {resetBoard} className="resetButton">Start</button>
       <div>
         {squares.map((row, rowIndex) => (
           <div key={rowIndex}>
