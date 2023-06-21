@@ -4,17 +4,20 @@ on:
   push:
     branches:
       - deploy
-      - main
 
     
 
-jobs:
+jobs: 
   createPullRequest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out git repository
+        uses: actions/checkout@v3
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v5
+      - name: print pr title
+        run: echo ${{ github.event.pull_request.title }}
+
+      
+
+
     
