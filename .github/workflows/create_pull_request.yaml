@@ -8,7 +8,7 @@ on:
       - deploy
       - main
 
-      
+
 
 jobs:
   create_pull_request:
@@ -39,6 +39,11 @@ jobs:
           write-mode: append
           contents: |
             console.log('some contents')
+
+      - name: Generate changelog
+        run: |
+          npm install changelog -g
+          changelog npm latest
 
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v5
