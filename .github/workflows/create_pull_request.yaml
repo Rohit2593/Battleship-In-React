@@ -31,9 +31,12 @@ jobs:
       #   run: yarn version --minor
 
       - name: Make commit 
-        run: |
-          cat >> README.md
-          this is an append line
+        uses: "DamianReeves/write-file-action@master"
+        with:
+          path: README.md
+          write-mode: append
+          contents: |
+            console.log('some contents')
 
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v5
