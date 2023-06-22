@@ -8,6 +8,8 @@ on:
       - deploy
       - main
 
+      
+
 jobs:
   create_pull_request:
     if: ${{ github.event.pull_request.merged && !startsWith(github.event.pull_request.title, 'Auto-Generated') }}
