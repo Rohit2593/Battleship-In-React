@@ -10,7 +10,7 @@ on:
 
 jobs:
   create_pull_request:
-    if: ${{ github.event.pull_request.merged }}
+    if: ${{ github.event.pull_request.merged && !startsWith(github.event.pull_request.title, 'Auto-Generated') }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out git repository
@@ -18,6 +18,29 @@ jobs:
 
       - name: echo pr title
         run: echo ${{ github.event.pull_request.title}}
+
+      # - name: Make commit for patch
+      #   if: startsWith(github.event.pull_request.title, "fix") || startsWith(github.event.pull_request.title, "bug")
+      #   run: yarn version --patch
+
+      # - name: Make commit for major changes
+      #   if: true
+      #   run: yarn version --major
+
+      # - name: Make commit for minor changes (this should be the default commit)
+      #   run: yarn version --minor
+
+      - name: Make commit 
+        run: |
+          cat >> README.md
+          this is an append line
+
+      - name: Create a pull request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: Auto-Generated
+
+
 
 
 

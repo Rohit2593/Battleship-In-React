@@ -163,4 +163,4 @@ export default function App() {
   );
 }
 
-// testing changelog ci #2
+// testing github action trigger on merge pull request
