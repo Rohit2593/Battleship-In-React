@@ -2,6 +2,21 @@
 
 ##### Bug Fixes
 
+*  fixed github action file (f0757609)
+*  fixed github action file (a8bcbd19)
+*  fixed changelog creation (a07446f9)
+*  fixed workflow file (0dc36184)
+*  fixed workflow file (3970a84e)
+
+##### Other Changes
+
+* //github.com/Rohit2593/Battleship-In-React into changelog_ci_testing (1e0cfd8a)
+* //github.com/Rohit2593/Battleship-In-React into changelog_ci_testing (16a9b9ec)
+
+#### 0.1.0 (2023-07-06)
+
+##### Bug Fixes
+
 *  fixed github action file (a8bcbd19)
 *  fixed changelog creation (a07446f9)
 *  fixed workflow file (0dc36184)
