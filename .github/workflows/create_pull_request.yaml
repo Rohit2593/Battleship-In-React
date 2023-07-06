@@ -22,7 +22,7 @@ jobs:
         run: echo ${{ github.event.pull_request.title}}
         
       - name: echo branch name
-        run: echo ${{ GITHUB_HEAD_REF }}
+        run: echo ${{ GITHUB_REF }}
 
       # - name: Make commit for patch
       #   if: startsWith(github.event.pull_request.title, "fix") || startsWith(github.event.pull_request.title, "bug")
