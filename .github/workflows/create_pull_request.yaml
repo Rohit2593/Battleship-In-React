@@ -2,69 +2,55 @@ name: Create Pull Request on merge in Deploy branch
 
 on:
   pull_request:
-    types:
-      - closed
     branches: 
-      - deploy
       - main
-
-
 
 jobs:
   create_pull_request:
-    if: ${{ github.event.pull_request.merged && !startsWith(github.event.pull_request.title, 'Auto-Generated') }}
+    if: ${{ github.event.pull_request.merged && !endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out git repository
         uses: actions/checkout@v3
-
-      - name: echo pr title
-        run: echo ${{ github.event.pull_request.title}}
+      
+        # we need to cache yarn install in yarn.lock in the root directory
+      # - name: Cache yarn install
+      #   uses: c-hive/gha-yarn-cache@v2
+        # with: 
+          # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
+          
+      - name: Generate Changelog
+        run: |
+          yarn add generate-changelog
+          yarn generate-changelog
         
+      - name: Get Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+      
       - name: Extract branch name
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-        
-      - name: echo branch name
-        run: echo ${{ steps.extract_branch.outputs.branch }}
-
-      # - name: Make commit for patch
-      #   if: startsWith(github.event.pull_request.title, "fix") || startsWith(github.event.pull_request.title, "bug")
-      #   run: yarn version --patch
-
-      # - name: Make commit for major changes
-      #   if: true
-      #   run: yarn version --major
-
-      # - name: Make commit for minor changes (this should be the default commit)
-      #   run: yarn version --minor
-
-      - name: Make commit 
-        uses: "DamianReeves/write-file-action@master"
-        with:
-          path: README.md
-          write-mode: append
-          contents: |
-            console.log('some contents')
-
-      - name: Generate changelog
-        run: |
-          npm install changelog -g
-          changelog npm latest
-
+  
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v5
         with:
-          title: Auto-Generated
-
-
-
-
-
-
-
-
+          base: main
+          branch: ${{ steps.extract_branch.outputs.branch }}
+          title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
+          
+    
+  generate-changelog:
+    if: ${{ !github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: generate changelog
+        uses: saadmk11/changelog-ci@v1.1.1
+        
+        # testing
       
 
 
