@@ -39,12 +39,4 @@ jobs:
           base: changelog_ci_testing
           branch: ${{ steps.extract_branch.outputs.branch }}
           title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
-          
-  generate-changelog:
-    if: ${{ !github.event.pull_request.merged && endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
-    runs-on: ubuntu-latest
-    steps: 
-      - name: run changelog ci
-        uses: saadmk11/changelog-ci@v1.1.1
-
-    
+              
