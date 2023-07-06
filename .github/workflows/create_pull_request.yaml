@@ -5,7 +5,7 @@ on:
     types:
       - closed
     branches: 
-      - main
+      - changelog_ci_testing
 
 jobs:
   create_pull_request:
@@ -47,7 +47,7 @@ jobs:
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v5
         with:
-          base: main
+          base: changelog_ci_testing
           branch: ${{ steps.extract_branch.outputs.branch }}
           title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
           
