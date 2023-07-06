@@ -2,6 +2,8 @@ name: Create Pull Request on merge in Deploy branch
 
 on:
   pull_request:
+    types:
+      - closed
     branches: 
       - changelog_ci_testing
 
@@ -17,6 +19,9 @@ jobs:
         
       - name: Check out git repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.extract_branch.outputs.branch }}
+          fetch-depth: 0
         
       - name: Set git username and user email
         run: |
@@ -28,6 +33,13 @@ jobs:
       #   uses: c-hive/gha-yarn-cache@v2
         # with: 
           # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
+      
+      - run: yarn version --minor
+          
+      - name: Generate Changelog
+        run: |
+          yarn add generate-changelog
+          yarn generate-changelog
         
       - name: Get Version
         id: package-version
@@ -39,4 +51,10 @@ jobs:
           base: changelog_ci_testing
           branch: ${{ steps.extract_branch.outputs.branch }}
           title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
-              
+          
+
+
+      
+
+
+    
