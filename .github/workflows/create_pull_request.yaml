@@ -2,8 +2,6 @@ name: Create Pull Request on merge in Deploy branch
 
 on:
   pull_request:
-    types:
-      - closed
     branches: 
       - changelog_ci_testing
 
@@ -30,12 +28,6 @@ jobs:
       #   uses: c-hive/gha-yarn-cache@v2
         # with: 
           # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
-          
-          
-      - name: Generate Changelog
-        run: |
-          yarn add generate-changelog
-          yarn generate-changelog
         
       - name: Get Version
         id: package-version
@@ -48,8 +40,11 @@ jobs:
           branch: ${{ steps.extract_branch.outputs.branch }}
           title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
           
-    # testing
-      
-
+  generate-changelog:
+    if: ${{ !github.event.pull_request.merged && endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
+    runs-on: ubuntu-latest
+    steps: 
+      - name: run changelog ci
+        uses: saadmk11/changelog-ci@v1.1.1
 
     
