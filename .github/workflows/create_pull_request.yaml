@@ -2,6 +2,8 @@ name: Create Pull Request on merge in Deploy branch
 
 on:
   pull_request:
+    types:
+      - closed
     branches: 
       - main
 
@@ -14,6 +16,33 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
+        
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.extract_branch.outputs.branch }}
+          fetch-depth: 0
+        
+      - name: Set git username and user email
+        run: |
+          git config user.name "RohitFlyfin"
+          git config user.email "rohitagarwal@flyfin.org"
+
+        # we need to cache yarn install in yarn.lock in the root directory
+      # - name: Cache yarn install
+      #   uses: c-hive/gha-yarn-cache@v2
+        # with: 
+          # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
+          
+          
+      - name: Generate Changelog
+        run: |
+          yarn add generate-changelog
+          yarn generate-changelog
+        
+      - name: Get Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
   
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v5
@@ -21,6 +50,9 @@ jobs:
           base: main
           branch: ${{ steps.extract_branch.outputs.branch }}
           title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
+          
+
+
       
 
 
