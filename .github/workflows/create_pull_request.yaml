@@ -40,6 +40,14 @@ jobs:
         run: |
           yarn add generate-changelog
           yarn generate-changelog
+          
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        with: 
+          commit_message: "chore: added changelog"
+          commit_user_name: Rohit
+          commit_user_email: RohitFlyFin@gmail.com
+          commit_author: meow
         
       - name: Get Version
         id: package-version
