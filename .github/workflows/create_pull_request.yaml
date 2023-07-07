@@ -34,11 +34,7 @@ jobs:
         # with: 
           # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
           
-          
-      - name: Generate Changelog
-        run: |
-          yarn add generate-changelog
-          yarn generate-changelog
+      - run: yarn version --patch
         
       - name: Get Version
         id: package-version
