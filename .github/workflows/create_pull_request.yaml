@@ -33,8 +33,6 @@ jobs:
       #   uses: c-hive/gha-yarn-cache@v2
         # with: 
           # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
-      
-      - run: yarn version --minor
           
       - name: Generate Changelog
         run: |
