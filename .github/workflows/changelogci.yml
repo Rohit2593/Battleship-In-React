@@ -1,0 +1,19 @@
+name: Changelog CI
+
+on:
+  pull_request:
+    types: [ opened ]
+  branches:
+    - changelog_ci_testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Changelog CI
+        uses: saadmk11/changelog-ci@v1.1.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
