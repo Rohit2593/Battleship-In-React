@@ -1,0 +1,37 @@
+name: Send CHANGELOG.md through email
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches: 
+      - changelog_ci_testing
+
+jobs: 
+  send_email:
+    if: ${{ endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+        
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.extract_branch.outputs.branch }}
+
+      - name: Get Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Send changelog as email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          connection_url: ${{secrets.MAIL_CONNECTION}}
+          subject: Changelog for release ${{ steps.package-version.outputs.current-version }}
+          to: rohitagarwal27032003@gmail.com
+          from: Github actions
+          html_body: file://CHANGELOG.md
+
