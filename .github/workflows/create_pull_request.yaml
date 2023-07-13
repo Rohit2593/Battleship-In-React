@@ -33,7 +33,7 @@ jobs:
       #   uses: c-hive/gha-yarn-cache@v2
         # with: 
           # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
-      - run: yarn version --major  
+#       - run: yarn version --major  
       
       - name: Generate Changelog
         run: |
@@ -48,6 +48,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           base: changelog_ci_testing
+          branch: ${{ steps.extract_branch.outputs.branch }}
           title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
           
   # temp 2
