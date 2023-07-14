@@ -9,7 +9,7 @@ on:
 
 jobs: 
   send_email:
-    if: ${{ endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
+    if: ${{ github.event.pull_request.merged && endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Extract branch name
@@ -29,14 +29,11 @@ jobs:
       - name: Send changelog as email
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
+          connection_url: ${{ secrets.MAIL_CONNECTION }}
           subject: Changelog for release ${{ steps.package-version.outputs.current-version }}
           to: rohitagarwal27032003@gmail.com
           from: Rohit Agarwal
-          html_body: file://CHANGELOG.md
+          body: file://CHANGELOG.md
           
           # temp
 
