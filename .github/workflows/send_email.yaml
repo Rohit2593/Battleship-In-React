@@ -29,10 +29,14 @@ jobs:
       - name: Send changelog as email
         uses: dawidd6/action-send-mail@v3
         with:
-          connection_url: ${{secrets.MAIL_CONNECTION}}
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
           subject: Changelog for release ${{ steps.package-version.outputs.current-version }}
           to: rohitagarwal27032003@gmail.com
-          from: Github actions
+          from: Rohit Agarwal
           html_body: file://CHANGELOG.md
           
           # temp
