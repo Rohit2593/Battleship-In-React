@@ -11,29 +11,30 @@ jobs:
   create_pull_request:
     if: ${{ github.event.pull_request.merged && !endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
     runs-on: ubuntu-latest
-    steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-        
+    steps:        
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Fetch Pull Request Commits
+        id: fetch_commits
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}"
+          COMMITS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq '.commits')
+
+          echo "::set-output name=commit_count::$COMMITS"
+    
+    
       - name: Check out git repository
         uses: actions/checkout@v3
         with:
           ref: ${{ steps.extract_branch.outputs.branch }}
-          fetch-depth: 0
+          fetch-depth: ${{ steps.fetch_commits.outputs.commit_count }}
         
       - name: Set git username and user email
         run: |
           git config user.name "RohitFlyfin"
           git config user.email "rohitagarwal@flyfin.org"
-
-        # we need to cache yarn install in yarn.lock in the root directory
-      # - name: Cache yarn install
-      #   uses: c-hive/gha-yarn-cache@v2
-        # with: 
-          # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
-#       - run: yarn version --major  
       
       - name: Generate Changelog
         run: |
@@ -48,7 +49,6 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           base: changelog_ci_testing
-          branch: ${{ steps.extract_branch.outputs.branch }}
           title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
           
   # temp 
