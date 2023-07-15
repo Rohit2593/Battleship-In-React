@@ -12,21 +12,21 @@ jobs:
     if: ${{ github.event.pull_request.merged && !endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
     runs-on: ubuntu-latest
     steps:        
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+#       - name: Checkout Repository
+#         uses: actions/checkout@v2
 
-      - name: Fetch Pull Request Commits
-        id: fetch_commits
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}"
-          COMMITS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq '.commits')
+#       - name: Fetch Pull Request Commits
+#         id: fetch_commits
+#         run: |
+#           PR_NUMBER=${{ github.event.pull_request.number }}
+#           API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}"
+#           COMMITS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq '.commits')
           
-          echo "commit_count=$COMMITS" >> $GITHUB_OUTPUT
+#           echo "commit_count=$COMMITS" >> $GITHUB_OUTPUT
           
-      - name: Display Commit Count
-        run: |
-          echo "Number of commits in the pull request: ${{ steps.fetch_commits.outputs.commit_count }}"
+#       - name: Display Commit Count
+#         run: |
+#           echo "Number of commits in the pull request: ${{ steps.fetch_commits.outputs.commit_count }}"
     
       - name: Check out git repository
         uses: actions/checkout@v3
