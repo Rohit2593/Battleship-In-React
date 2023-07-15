@@ -22,16 +22,16 @@ jobs:
           API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}"
           COMMITS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq '.commits')
           
-          echo "commit_count=$COMMITS" >> $GITHUB_OUTPUT
+          echo "commit_count={$COMMITS+1}" >> $GITHUB_OUTPUT
           
       - name: Display Commit Count
         run: |
-          echo "Number of commits in the pull request: ${{ steps.fetch_commits.outputs.commit_count + 1 }} "
+          echo "Number of commits in the pull request: ${{ steps.fetch_commits.outputs.commit_count }} "
     
       - name: Check out git repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: ${{ steps.fetch_commits.outputs.commit_count + 1 }} 
+          fetch-depth: ${{ steps.fetch_commits.outputs.commit_count}} 
           ref: changelog_ci_testing
         
       - name: Set git username and user email
