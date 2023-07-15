@@ -32,7 +32,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: changelog_ci_testing
-          fetch-depth: ${{ steps.fetch_commits.outputs.commit_count }}
+#           fetch-depth: ${{ steps.fetch_commits.outputs.commit_count }}
+          fetch-depth: 0
         
       - name: Set git username and user email
         run: |
