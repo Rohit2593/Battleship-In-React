@@ -1,5 +1,11 @@
 ### 0.3.0 (2023-07-15)
 
+##### Bug Fixes
+
+*  final fix (e8e36055)
+
+### 0.3.0 (2023-07-15)
+
 ##### Chores
 
 *  added comment (4d03d689)
