@@ -26,7 +26,7 @@ jobs:
           
       - name: Display Commit Count
         run: |
-          echo "Number of commits in the pull request: ${{ steps.fetch_commits.outputs.commit_count }}"
+          echo "Number of commits in the pull request: ${{ steps.fetch_commits.outputs.commit_count }}+1"
     
       - name: Check out git repository
         uses: actions/checkout@v3
