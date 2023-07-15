@@ -31,7 +31,7 @@ jobs:
       - name: Check out git repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: ${{ steps.fetch_commits.outputs.commit_count + 1}}
+          fetch-depth: ${{ steps.fetch_commits.outputs.commit_count}}+1
           ref: changelog_ci_testing
         
       - name: Set git username and user email
