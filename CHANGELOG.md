@@ -1,3 +1,9 @@
+#### 0.2.1 (2023-07-17)
+
+##### New Features
+
+*  added versioning (6e36a0ef)
+
 ### 0.3.0 (2023-07-15)
 
 ##### Bug Fixes
