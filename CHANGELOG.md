@@ -1,5 +1,11 @@
 #### 0.2.1 (2023-07-17)
 
+##### Bug Fixes
+
+*  fixed versioning (642781f4)
+
+#### 0.2.1 (2023-07-17)
+
 ##### New Features
 
 *  added versioning (6e36a0ef)
