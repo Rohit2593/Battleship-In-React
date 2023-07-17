@@ -1,3 +1,19 @@
+#### 0.2.2 (2023-07-17)
+
+##### Chores
+
+*  change 1 (316d2587)
+
+##### New Features
+
+*  feat 1 (10dcf82b)
+*  added versioning (6e36a0ef)
+
+##### Bug Fixes
+
+*  fix 1 (eb089e5a)
+*  fixed versioning (642781f4)
+
 
 ##### Chores (xoxo)
 
