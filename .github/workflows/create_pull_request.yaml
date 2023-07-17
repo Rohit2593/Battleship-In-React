@@ -44,7 +44,7 @@ jobs:
           yarn add generate-changelog
           yarn changelog -p
     
-      - run: yarn version --p
+      - run: yarn version --patch
   
       - name: Get Version
         id: package-version
