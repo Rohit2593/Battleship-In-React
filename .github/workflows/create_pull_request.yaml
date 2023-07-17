@@ -42,8 +42,10 @@ jobs:
       - name: Generate Changelog
         run: |
           yarn add generate-changelog
-          yarn changelog -m
-        
+          yarn changelog -p
+    
+      - run: yarn version --p
+  
       - name: Get Version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
