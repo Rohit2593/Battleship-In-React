@@ -1,3 +1,9 @@
+#### 0.2.4 (2023-07-19)
+
+##### Bug Fixes
+
+*  fixed automated email (f483af73)
+
 #### 0.2.3 (2023-07-19)
 
 ##### New Features
