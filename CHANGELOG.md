@@ -1,3 +1,9 @@
+#### 0.2.3 (2023-07-19)
+
+##### New Features
+
+*  added auto generated email (6dbb0e74)
+
 #### 0.2.2 (2023-07-17)
 
 ##### Chores
