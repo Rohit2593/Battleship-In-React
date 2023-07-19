@@ -17,6 +17,11 @@ jobs:
         with:
           ref: changelog_ci_testing
     
+      - name: Get Changelog
+        run: |
+          # Fetch the latest changelog.md from your repository
+          wget https://raw.githubusercontent.com/Rohit2593/Battleship-In-React/changelog_ci_testing/CHANGELOG.md -O CHANGELOG.md 
+          
       - name: Extract Latest Version Changelog
         id: extract_changelog
         run: |
@@ -25,7 +30,6 @@ jobs:
           # Extract the latest version and its changelog
           latest_version=$(awk '/^## [0-9]+\.[0-9]+\.[0-9]+/{latest=$2}END{print latest}' CHANGELOG.md)
           awk -v ver="## ${latest_version}" '/^##/{if(p){exit}if($0==ver){p=1}}p' CHANGELOG.md > latest_changelog.md
-        continue-on-error: true
   
       - name: Get Version
         id: package-version
