@@ -1,0 +1,48 @@
+name: Send CHANGELOG.md through email
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches: 
+      - deploy
+
+jobs: 
+  send_email:
+    if: ${{ github.event.pull_request.merged && endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        with:
+          ref: deploy
+          
+      - name: Extract Latest Version Changelog
+        id: extract_changelog
+        run: |
+          # Install 'awk' to parse the changelog.md file
+          sudo apt-get update && sudo apt-get -y install gawk
+          # Extract the latest version and its changelog
+          awk '/^(##|###|####) \[?[0-9]+.[0-9]+.[0-9]+/{if(p){exit}{p=1}}p' CHANGELOG.md > latest_changelog.md
+          cat CHANGELOG.md
+          cat latest_changelog.md
+  
+      - name: Get Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Send changelog as email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.MAIL_USERNAME}}
+          # google wont allow us to use the account password directly, so we need to set an app password for mail and set it as the secret
+          password: ${{secrets.MAIL_PASSWORD}} 
+          subject: Changelog for release ${{ steps.package-version.outputs.current-version }}
+          to: rohitagarwal27032003@gmail.com
+          from: Rohit Agarwal
+          body: file://latest_changelog.md
+          
+          # temp
+          
