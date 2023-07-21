@@ -5,37 +5,62 @@ on:
     types:
       - closed
     branches: 
-      - main
+      - deploy
 
 jobs:
   create_pull_request:
     if: ${{ github.event.pull_request.merged && !endsWith(github.event.pull_request.title, '[Auto-Generated]') }}
     runs-on: ubuntu-latest
     steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Fetch Pull Request Commits
+        id: fetch_commits
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}"
+          COMMITS=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $API_URL | jq '.commits')
+          INCREMENTED_COMMITS=$(expr $COMMITS + 1)
+          echo "commit_count=$INCREMENTED_COMMITS" >> $GITHUB_OUTPUT
+          
+      - name: Display Commit Count
+        run: |
+          echo "Number of commits in the pull request: ${{ steps.fetch_commits.outputs.commit_count }} "
         
       - name: Check out git repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ steps.extract_branch.outputs.branch }}
-          fetch-depth: 0
-        
+          fetch-depth: ${{ steps.fetch_commits.outputs.commit_count}} 
+          ref: deploy
+                    
       - name: Set git username and user email
         run: |
-          git config user.name "RohitFlyfin"
-          git config user.email "rohitagarwal@flyfin.org"
-
-        # we need to cache yarn install in yarn.lock in the root directory
-      # - name: Cache yarn install
-      #   uses: c-hive/gha-yarn-cache@v2
-        # with: 
-          # directory: server # Optional, speficy the folder of yarn.lock if not in the root directory
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+      
+      - name: Install 
+        run: |
+          yarn install
           
-      - run: yarn version --patch
-        
+      - name: Make commit for patch
+        if: startsWith(github.event.pull_request.title, '[patch]')
+        run: |
+          yarn changelog -p
+          yarn version --patch
+
+      - name: Make commit for major changes
+        if: startsWith(github.event.pull_request.title, '[major]')
+        run: |
+          yarn changelog -M
+          yarn version --major
+
+      - name: Make commit for minor changes
+        if: ${{ !startsWith(github.event.pull_request.title, '[patch]') && !startsWith(github.event.pull_request.title, '[major]') }}
+        run: |
+          yarn changelog -m
+          yarn version --minor     
+      
       - name: Get Version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
@@ -43,13 +68,6 @@ jobs:
       - name: Create a pull request
         uses: peter-evans/create-pull-request@v5
         with:
-          base: main
-          branch: ${{ steps.extract_branch.outputs.branch }}
+          base: deploy
           title: release ${{ steps.package-version.outputs.current-version }} [Auto-Generated]
           
-
-
-      
-
-
-    
