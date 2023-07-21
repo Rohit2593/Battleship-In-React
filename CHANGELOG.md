@@ -1,3 +1,13 @@
+#### 0.1.1 (2023-07-21)
+
+##### New Features
+
+*  automated email (000b505b)
+
+##### Bug Fixes
+
+*  fixed changelog creation\ (b4399664)
+
 #### 0.1.0 (2023-07-06)
 
 ##### Bug Fixes
