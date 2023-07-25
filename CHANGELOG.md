@@ -1,3 +1,9 @@
+### 0.2.0 (2023-07-21)
+
+##### New Features
+
+*  example commit (c4547cfe)
+
 #### 0.1.1 (2023-07-21)
 
 ##### New Features
