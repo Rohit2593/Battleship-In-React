@@ -1,3 +1,9 @@
+#### 0.2.1 (2023-07-25)
+
+##### Bug Fixes
+
+*  commit in main branch (3dbf2e6e)
+
 ### 0.2.0 (2023-07-21)
 
 ##### New Features
